@@ -1,0 +1,2 @@
+{"TipoToken": "ID", "Lexema": "teste", "Valor": "-", "TipoDado": "-"}
+{"TipoToken": "ID", "Lexema": "alou", "Valor": "-", "TipoDado": "-"}
