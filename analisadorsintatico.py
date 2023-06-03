@@ -4,16 +4,13 @@ import pandas as pd
 
 
 # lista dos terminais da gramatica
-terminal = ['ID', 'Numero','char','int','float','function','se', 'entao','senao','enquanto','faca','repita','ate','<','<=', '==','<>','>','>=','+','-','*','/','^', '=','(',')','{','}',';',':',',','$']
+terminal = ['ID', 'Numero', 'char', 'int', 'float', 'function', 'se', 'entao', 'senao', 'enquanto', 'faca', 'repita', 'ate', '<', '<=', '==', '<>', '>', '>=', '+', '-', '*', '/', '^', '=', '(', ')', '{', '}', ';', ':', ',', '$']
 
-
-#Realiza a leitura da tabela de analise sintatica, campo "names" são as colunas que contem os terminais no arquivo tabelaAnalise.xlsx
+# Realiza a leitura da tabela de analise sintatica, campo "names" são as colunas que contem os terminais no arquivo tabelaAnalise.xlsx
 tabelaAnalise = pd.read_excel('tabelaAnalise.xlsx', names= terminal)
 
 # Realiza a leitura da tabela de produções, campo "names[Producoes]" é a coluna que contem as produções no arquivo tabelaProducoes.xlsx.
-producoes = pd.read_excel('tabelaProducoes.xlsx', names =['Producoes'])
-
-
+tabelaProducoes = pd.read_excel('tabelaProducoes.xlsx', names =['Producoes'])
 
 #Lê o arquivo de código
 file = open("codigo.txt", "r")
@@ -43,12 +40,10 @@ class Arvore:
         return '%s\n %s' % (self.chave, self.lista)
     
     
-def estrutura_floresta(floresta):
-    if floresta:
-        for j in range(0, len(floresta)):
-            print(floresta[j])
-    
-
+def estrutura_arvore(arvore):
+    if arvore:
+        for j in range(0, len(arvore)):
+            print(arvore[j])
 
 
 def removeListaVazia():
@@ -56,9 +51,17 @@ def removeListaVazia():
     if pilha and not pilha[-1]:
         pilha.pop()
 
+def getProducaoFromErro(topo):
+    valor = tabelaAnalise.loc[topo, :]
+    colunas = valor[valor > 0 ]
+    simbolos = []
+    for y in range(0, len(colunas)):
+        simbolos.append(colunas.index[y])
+
+    return simbolos
 
 def analisePreditiva():
-    global proxToken, pilha, floresta
+    global proxToken, pilha, arvore, producoes
     while pilha:
         X = pilha[-1]
 
@@ -78,8 +81,9 @@ def analisePreditiva():
                 print('Erro: Produção (' +  str(X[-1]) + ', ' + proxToken[1] + ' ) inesperada! Linha ' + str(proxToken[2][0]) + ' Coluna ' + str(proxToken[2][1]))
                 break
             elif (proxToken[0] != 'RELOP' and proxToken[0] != 'Operador Aritimético') and tabelaAnalise.loc[X[-1], proxToken[0]] == -1: #se não tiver retorna erro
-                print(pilha)
-                print('Erro: Produção (' +  str(X[-1]) + ', ' + proxToken[0] + ' ) inesperada! Linha ' + str(proxToken[2][0]) + ' Coluna ' + str(proxToken[2][1]))
+                producoes = getProducaoFromErro(X[-1])
+                print('Erro: Produção (' +  str(X[-1]) + ', ' + proxToken[0] + ' ) inesperada!') 
+                print('Após um ' + proxToken[0] + ', é esperado os terminais a seguir: ', producoes)               
                 break
             
             else:
@@ -90,28 +94,22 @@ def analisePreditiva():
                     valor = tabelaAnalise.loc[X[-1], proxToken[1]]
 
                     # procura o valor na tabela de produções
-                    resultado = producoes.iloc[int(valor)-1, :]
-
-                    # transforma o resultado em uma lista contendo uma unica string
-                    transforma = resultado.values
+                    resultado = tabelaProducoes.iloc[int(valor)-1, :]
 
                     # transforma a lista de uma unica string em uma lista de strings
-                    producaoinversa = transforma[0].split()
+                    producaoinversa = resultado.values[0].split()
                 else:
                     valor = tabelaAnalise.loc[X[-1], proxToken[0]]
                     # procura o valor na tabela de produções
-                    resultado = producoes.iloc[int(valor)-1, :]
-
-                    # transforma o resultado em uma lista contendo uma unica string
-                    transforma = resultado.values
+                    resultado = tabelaProducoes.iloc[int(valor)-1, :]
 
                     # transforma a lista de uma unica string em uma lista de strings
-                    producaoinversa = transforma[0].split()
+                    producaoinversa =  resultado.values[0].split()
 
                 for k in range(0, len(producaoinversa)):
                     sub_arvore.lista.append(producaoinversa[k])
 
-                floresta.append(sub_arvore.definir_subarvore())
+                arvore.append(sub_arvore.definir_subarvore())
 
                 # remove o topo da lista
                 pilha[-1].pop()
@@ -128,17 +126,15 @@ def analisePreditiva():
 
     if len(pilha) == 0 and proxToken[0] == '$':
         print('Cadeia aceita!')
-        return floresta
+        return arvore
     else:
         print('Cadeia rejeitada!')
                 
-
-          
 ############# "MAIN" ############
 i=1
-floresta = []
+arvore = []
 pilha = []
 pilha.append(['Programa'])
 proxToken = lex(i)
-floresta = analisePreditiva()
-estrutura_floresta(floresta)
+arvore = analisePreditiva()
+estrutura_arvore(arvore)

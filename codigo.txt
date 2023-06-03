@@ -1,5 +1,5 @@
-function teste {
-int: teste1, teste2; 
+function teste () {
+int: teste1, teste2;
 char: teste3;
 float: teste4, teste5; 
 teste1 = 3;

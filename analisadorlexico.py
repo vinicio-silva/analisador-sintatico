@@ -945,9 +945,9 @@ def getToken(file, token):
         elif estado == 'FRAC':
             if nro_token == token:
                 if char == '':
-                    nro_elem = addTable('Fracao', strAux, strAux, 'FLOAT', TABELA_SIMBOLO)
+                    nro_elem = addTable('Numero', strAux, strAux, 'FLOAT', TABELA_SIMBOLO)
                 else:
-                    nro_elem = addTable('Fracao', strAux[:-1], strAux[:-1], 'FLOAT', TABELA_SIMBOLO)
+                    nro_elem = addTable('Numero', strAux[:-1], strAux[:-1], 'FLOAT', TABELA_SIMBOLO)
                 return ('Numero', nro_elem, (linha, coluna))
             else:
                 nro_token += 1
@@ -955,14 +955,14 @@ def getToken(file, token):
                 estado = 'A'
                 look_ahead = True
 
-        # Numero Exponencial
+        # Notação Científica
 
         elif estado == 'EXP':
             if nro_token == token:
                 if char == '':
-                    nro_elem = addTable('Exponencial', strAux, strAux, 'FLOAT', TABELA_SIMBOLO)
+                    nro_elem = addTable('Numero', strAux, strAux, 'FLOAT', TABELA_SIMBOLO)
                 else:
-                    nro_elem = addTable('Exponencial', strAux[:-1], strAux[:-1], 'FLOAT', TABELA_SIMBOLO)
+                    nro_elem = addTable('Numero', strAux[:-1], strAux[:-1], 'FLOAT', TABELA_SIMBOLO)
                 return ('Numero', nro_elem, (linha, coluna))
             else:
                 nro_token += 1
