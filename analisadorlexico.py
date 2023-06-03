@@ -930,10 +930,10 @@ def getToken(file, token):
         elif estado == 'NINT':
             if nro_token == token:
                 if char == '':
-                    nro_elem = addTable('Numero', strAux, strAux, 'INT', TABELA_SIMBOLO)
+                    nro_elem = addTable('NumeroInteiro', strAux, strAux, 'INT', TABELA_SIMBOLO)
                 else:
-                    nro_elem = addTable('Numero', strAux[:-1], strAux[:-1], 'INT', TABELA_SIMBOLO)
-                return ('NROINT', nro_elem, (linha, coluna))
+                    nro_elem = addTable('NumeroInteiro', strAux[:-1], strAux[:-1], 'INT', TABELA_SIMBOLO)
+                return ('Numero', nro_elem, (linha, coluna))
             else:
                 nro_token += 1
                 strAux = ''
@@ -948,7 +948,7 @@ def getToken(file, token):
                     nro_elem = addTable('Fracao', strAux, strAux, 'FLOAT', TABELA_SIMBOLO)
                 else:
                     nro_elem = addTable('Fracao', strAux[:-1], strAux[:-1], 'FLOAT', TABELA_SIMBOLO)
-                return ('FRAC', nro_elem, (linha, coluna))
+                return ('Numero', nro_elem, (linha, coluna))
             else:
                 nro_token += 1
                 strAux = ''
@@ -963,7 +963,7 @@ def getToken(file, token):
                     nro_elem = addTable('Exponencial', strAux, strAux, 'FLOAT', TABELA_SIMBOLO)
                 else:
                     nro_elem = addTable('Exponencial', strAux[:-1], strAux[:-1], 'FLOAT', TABELA_SIMBOLO)
-                return ('EXP', nro_elem, (linha, coluna))
+                return ('Numero', nro_elem, (linha, coluna))
             else:
                 nro_token += 1
                 strAux = ''
@@ -1114,7 +1114,7 @@ def getToken(file, token):
         
         elif estado == 'LT':
             if nro_token == token:
-                 return ('RELOP', 'LT', (linha, coluna))
+                 return ('RELOP', '<', (linha, coluna))
             else:
                 nro_token += 1
                 strAux = ''
@@ -1125,7 +1125,7 @@ def getToken(file, token):
         
         elif estado == 'AN':
             if nro_token == token:
-                return ('RELOP', 'NE', (linha, coluna))
+                return ('RELOP', '<>', (linha, coluna))
             else:
                 nro_token += 1
                 strAux = ''
@@ -1135,7 +1135,7 @@ def getToken(file, token):
 
         elif estado == 'AM':
             if nro_token == token:
-                return ('RELOP', 'LE', (linha, coluna))
+                return ('RELOP', '<=', (linha, coluna))
             else:
                 nro_token += 1
                 strAux = ''
@@ -1145,7 +1145,7 @@ def getToken(file, token):
 
         elif estado == 'GT':
             if nro_token == token:
-                return ('RELOP', 'GT', (linha, coluna))
+                return ('RELOP', '>', (linha, coluna))
             else:
                 nro_token += 1
                 strAux = ''
@@ -1156,7 +1156,7 @@ def getToken(file, token):
 
         elif estado == 'GE':
             if nro_token == token:
-                return ('RELOP', 'GE', (linha, coluna))
+                return ('RELOP', '>=', (linha, coluna))
             else:
                 nro_token += 1
                 strAux = ''
@@ -1166,7 +1166,7 @@ def getToken(file, token):
 
         elif estado == 'AO':
             if nro_token == token:
-                return ('RELOP', 'EQ', (linha, coluna))
+                return ('RELOP', '==', (linha, coluna))
             else:
                 nro_token += 1
                 strAux = ''
@@ -1319,4 +1319,4 @@ def getToken(file, token):
                         
         #########################
 
-    return('EOF', 'EOF', (linha, coluna))
+    return('$', 'EOF', (linha, coluna))
