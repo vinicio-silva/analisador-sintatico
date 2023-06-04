@@ -1,12 +1,11 @@
 function teste () {
 int: teste1, teste2;
 char: teste3;
-float: teste4, teste5; 
-teste1 = 3;
+float: teste4, teste5;
+teste1 = 3.5;
 teste2 = 4;
+teste5 = 1E-2;
 se (teste1 > teste2) entao {
     teste3 = id;
-} senao {
-    teste3 = funcionou;
 }
 }

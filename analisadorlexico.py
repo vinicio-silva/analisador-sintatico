@@ -959,10 +959,8 @@ def getToken(file, token):
 
         elif estado == 'EXP':
             if nro_token == token:
-                if char == '':
-                    nro_elem = addTable('Numero', strAux, strAux, 'FLOAT', TABELA_SIMBOLO)
-                else:
-                    nro_elem = addTable('Numero', strAux[:-1], strAux[:-1], 'FLOAT', TABELA_SIMBOLO)
+                numAux = str(float(strAux[:-1]))
+                nro_elem = addTable('Numero', strAux[:-1], numAux, 'FLOAT', TABELA_SIMBOLO)
                 return ('Numero', nro_elem, (linha, coluna))
             else:
                 nro_token += 1
