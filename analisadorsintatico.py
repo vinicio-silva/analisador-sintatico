@@ -37,14 +37,14 @@ class Arvore:
         self.lista = []
 
     def definir_subarvore(self):
-        return '%s\n %s' % (self.chave, self.lista)
+        return '%s\n %s\n' % (self.chave, self.lista)
     
     
 def estrutura_arvore(arvore):
     if arvore:
         for j in range(0, len(arvore)):
             print(arvore[j])
-
+        print('Cadeia aceita!')
 
 def removeListaVazia():
   ### remove lista vazia da pilha ###
@@ -61,7 +61,7 @@ def getProducaoFromErro(topo):
     return simbolos
 
 def analisePreditiva():
-    global proxToken, pilha, arvore, producoes
+    global proxToken, pilha, arvore, producoes, lastToken
     while pilha:
         X = pilha[-1]
 
@@ -71,43 +71,46 @@ def analisePreditiva():
             if (X[-1] == proxToken[0] or X[-1] == proxToken[1]):
                 pilha[-1].pop()
                 removeListaVazia()
+                lastToken = proxToken
                 proxToken = lex(i)
             else:
-                print('Erro: Caractere ' + proxToken[0] + ' inesperado na Linha ' + str(proxToken[2][0]) + ' Coluna ' + str(proxToken[2][1]))
-                break
+                if (proxToken[0] == 'RELOP' or proxToken[0] == 'Operador Aritimético'):
+                    print('Erro: Produção (' +  str(X[-1]) + ', ' + proxToken[1] + ' ) inesperada após um ' + lastToken[0])
+                    break
+                else:
+                    print(proxToken[0])
+                    print('Erro: Caractere ' + proxToken[0] + ' inesperado após um ' + lastToken[0])
+                    break
         else:
             # Verifica na tabela preditiva se há uma produção para o token no não-terminal X[-1] (topo da pilha)
             if (proxToken[0] == 'RELOP' or proxToken[0] == 'Operador Aritimético') and tabelaAnalise.loc[X[-1], proxToken[1]] == -1: #se não tiver retorna erro
-                print('Erro: Produção (' +  str(X[-1]) + ', ' + proxToken[1] + ' ) inesperada! Linha ' + str(proxToken[2][0]) + ' Coluna ' + str(proxToken[2][1]))
+                print('Erro: Produção (' +  str(X[-1]) + ', ' + proxToken[1] + ' ) inesperada após um ' + lastToken[1])
                 break
             elif (proxToken[0] != 'RELOP' and proxToken[0] != 'Operador Aritimético') and tabelaAnalise.loc[X[-1], proxToken[0]] == -1: #se não tiver retorna erro
                 producoes = getProducaoFromErro(X[-1])
                 print('Erro: Produção (' +  str(X[-1]) + ', ' + proxToken[0] + ' ) inesperada!') 
-                print('Após um ' + proxToken[0] + ', é esperado os terminais a seguir: ', producoes)               
+                print('Após um ' + lastToken[0] + ', é esperado os terminais a seguir: ', producoes)               
                 break
             
             else:
                 sub_arvore = Arvore(pilha[-1])
+                
+                if proxToken[0] == 'RELOP' or proxToken [0] == 'Operador Aritimético':
+                    proxTokenAux = proxToken[1]
+                else:
+                    proxTokenAux = proxToken[0]
 
                 # Pega o valor da produção do Não-terminal, terminal
-                if proxToken[0] == 'RELOP' or proxToken [0] == 'Operador Aritimético':
-                    valor = tabelaAnalise.loc[X[-1], proxToken[1]]
+                valor = tabelaAnalise.loc[X[-1], proxTokenAux]
 
-                    # procura o valor na tabela de produções
-                    resultado = tabelaProducoes.iloc[int(valor)-1, :]
+                # procura o valor na tabela de produções
+                resultado = tabelaProducoes.iloc[int(valor)-1, :]
 
-                    # transforma a lista de uma unica string em uma lista de strings
-                    producaoinversa = resultado.values[0].split()
-                else:
-                    valor = tabelaAnalise.loc[X[-1], proxToken[0]]
-                    # procura o valor na tabela de produções
-                    resultado = tabelaProducoes.iloc[int(valor)-1, :]
+                # transforma a lista de uma unica string em uma lista de strings
+                producao = resultado.values[0].split()
 
-                    # transforma a lista de uma unica string em uma lista de strings
-                    producaoinversa =  resultado.values[0].split()
-
-                for k in range(0, len(producaoinversa)):
-                    sub_arvore.lista.append(producaoinversa[k])
+                for k in range(0, len(producao)):
+                    sub_arvore.lista.append(producao[k])
 
                 arvore.append(sub_arvore.definir_subarvore())
 
@@ -118,14 +121,13 @@ def analisePreditiva():
                 removeListaVazia()
 
                 # se a produção inversa for diferente de epsolon
-                if (producaoinversa[-1] != 'ε'):
+                if (producao[-1] != 'ε'):
                     # coloque a produção de forma inversa na pilha
-                    pilha.append(list(reversed(producaoinversa)))
+                    pilha.append(list(reversed(producao)))
                 else: #caso seja, não coloque o epsolon na pilha
                     pass
 
-    if len(pilha) == 0 and proxToken[0] == '$':
-        print('Cadeia aceita!')
+    if len(pilha) == 0 and proxToken[0] == '$':        
         return arvore
     else:
         print('Cadeia rejeitada!')
