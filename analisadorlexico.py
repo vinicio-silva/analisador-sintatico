@@ -930,9 +930,9 @@ def getToken(file, token):
         elif estado == 'NINT':
             if nro_token == token:
                 if char == '':
-                    nro_elem = addTable('NumeroInteiro', strAux, strAux, 'INT', TABELA_SIMBOLO)
+                    nro_elem = addTable('Numero', strAux, strAux, 'INT', TABELA_SIMBOLO)
                 else:
-                    nro_elem = addTable('NumeroInteiro', strAux[:-1], strAux[:-1], 'INT', TABELA_SIMBOLO)
+                    nro_elem = addTable('Numero', strAux[:-1], strAux[:-1], 'INT', TABELA_SIMBOLO)
                 return ('Numero', nro_elem, (linha, coluna))
             else:
                 nro_token += 1

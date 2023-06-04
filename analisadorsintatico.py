@@ -15,6 +15,9 @@ tabelaProducoes = pd.read_excel('tabelaProducoes.xlsx', names =['Producoes'])
 #Lê o arquivo de código
 file = open("codigo.txt", "r")
 
+#Tabela de Símbolo
+TABELA_SIMBOLO = open("tabela-simbolo.txt", "r+")
+
 def lex(token):
     (nome, atr, (linha, coluna)) = getToken(file, token)
     global i
@@ -35,7 +38,7 @@ class Arvore:
     def __init__(self, chave=None):
         self.chave = list(reversed(chave))
         self.lista = []
-
+        
     def definir_subarvore(self):
         return '%s\n %s\n' % (self.chave, self.lista)
     
@@ -59,6 +62,16 @@ def getProducaoFromErro(topo):
         simbolos.append(colunas.index[y])
 
     return simbolos
+
+def getTokenFromTabelaSimbolo(linha):
+    table = TABELA_SIMBOLO
+    table.seek(0, 0)
+
+    for num, row in enumerate(table, start=1):
+        if num == linha:
+            objeto = json.loads(row)
+            return objeto['Lexema'] 
+              
 
 def analisePreditiva():
     global proxToken, pilha, arvore, producoes, lastToken
@@ -110,7 +123,14 @@ def analisePreditiva():
                 producao = resultado.values[0].split()
 
                 for k in range(0, len(producao)):
-                    sub_arvore.lista.append(producao[k])
+                    if producao[k] == proxToken[0] and (proxToken[0] == 'ID' or proxToken[0] == 'Numero'):
+                        producaoAux = getTokenFromTabelaSimbolo(proxToken[1])
+                        sub_arvore.lista.append(producaoAux)
+                    elif producao[k] == 'ID' and proxToken[0] == 'function':
+                        producaoAux = getTokenFromTabelaSimbolo(1)
+                        sub_arvore.lista.append(producaoAux)
+                    else:
+                        sub_arvore.lista.append(producao[k])
 
                 arvore.append(sub_arvore.definir_subarvore())
 
