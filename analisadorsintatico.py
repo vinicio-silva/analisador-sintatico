@@ -1,6 +1,7 @@
 from analisadorlexico import * 
 from asyncio.windows_events import NULL
 import pandas as pd
+import ast
 
 
 # lista dos terminais da gramatica
@@ -40,11 +41,20 @@ class Arvore:
         return '%s\n %s\n' % (self.chave, self.lista)
     
     
-def estrutura_arvore(arvore):
-    if arvore:
-        for j in range(0, len(arvore)):
-            print(arvore[j])
-        print('Cadeia aceita!')
+def estrutura_arvore(arvore, indent=0):
+    for nodo in arvore:
+        # Separando a entrada em pai e filhos
+        nodo = nodo.split("\n")
+        pai = ast.literal_eval(nodo[0].strip())
+        filhos = ast.literal_eval(nodo[1].strip())
+
+        # Imprimindo o pai
+        print('  ' * indent + str(pai))
+
+        # Imprimindo os filhos com setas e profundidade
+        for filho in filhos:
+            print('  ' * (indent + 1) + "-> Profundidade: " + str(indent + 1) + ", Nó: " + str(filho))
+    print('Cadeia aceita!')
 
 def removeListaVazia():
   ### remove lista vazia da pilha ###
