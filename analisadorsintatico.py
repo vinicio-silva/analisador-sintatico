@@ -69,8 +69,19 @@ def getTokenFromTabelaSimbolo(linha):
             return objeto['Lexema']
 
 
+def find_node(root, value):
+    if root.value == value:
+        return root
+
+    for child in reversed(root.children):
+        node = find_node(child, value)
+        if node:
+            return node
+
+    return None
+
 def analisePreditiva():
-    global proxToken, pilha, arvore, lastToken
+    global proxToken, pilha, arvore, lastToken, noAux
     while pilha:        
         X = pilha[-1] 
         # Se o topo da pilha está no terminal
@@ -103,14 +114,25 @@ def analisePreditiva():
                 # Nó raiz
                 if X == ['Programa']:
                     no = arvore
+                    noAux.append(no.value)
                 # Outros nós
                 else:
-                    # Percorre os filhos do nó anterior
-                    for child in no.children:     
-                        # Procura nos filhos o topo da pilha                   
+                    # Percorre os filhos do Nó anterior
+                    for child in no.children: 
+                        # Procura nos filhos o topo da pilha 
                         if child.value == X[-1]:
                             # Atribui ao nó o topo da pilha
+                            noAux.append(no.value)
                             no = child
+                            break
+                    # Caso não esteja nos filhos do Nó
+                    else:                        
+                        for elem in noAux:
+                            pai = find_node(arvore, elem)
+                            for child in pai.children:
+                                if child.value == X[-1]:         
+                                    no = child
+                                    break
                 
                 if proxToken[0] in ['RELOP', 'Operador Aritmético']:
                     proxTokenAux = proxToken[1]
@@ -160,6 +182,7 @@ def analisePreditiva():
 i = 1
 arvore = Node('Programa')
 pilha = []
+noAux = []
 pilha.append(['Programa'])
 proxToken = lex(i)
 analisePreditiva()
