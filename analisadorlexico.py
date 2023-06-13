@@ -266,7 +266,7 @@ def getToken(file, token):
             
             if char !=  '*':
                 if nro_token == token:
-                    return ('Operador Aritimético', '/', (linha, coluna))
+                    return ('Operador Aritmético', '/', (linha, coluna))
                 else:
                     nro_token += 1
                     strAux = ''
@@ -1104,7 +1104,6 @@ def getToken(file, token):
         elif estado == 'CMNT':
             strAux = ''
             estado = 'A'
-            look_ahead = True
 
         ####### RELOP #######
 
@@ -1176,7 +1175,7 @@ def getToken(file, token):
 
         elif estado == 'L':
             if nro_token == token:
-                return ('Operador Aritimético', '-', (linha, coluna))
+                return ('Operador Aritmético', '-', (linha, coluna))
             else:
                 nro_token += 1
                 strAux = ''
@@ -1187,7 +1186,7 @@ def getToken(file, token):
 
         elif estado == 'M':
             if nro_token == token:
-                return ('Operador Aritimético', '+', (linha, coluna))
+                return ('Operador Aritmético', '+', (linha, coluna))
             else:
                 nro_token += 1
                 strAux = ''
@@ -1197,7 +1196,7 @@ def getToken(file, token):
         
         elif estado == 'DIV':
             if nro_token == token:
-                return ('Operador Aritimético', '/', (linha, coluna))
+                return ('Operador Aritmético', '/', (linha, coluna))
             else:
                 nro_token += 1
                 strAux = ''
@@ -1208,7 +1207,7 @@ def getToken(file, token):
 
         elif estado == 'O':
             if nro_token == token:
-                return ('Operador Aritimético', '*', (linha, coluna))
+                return ('Operador Aritmético', '*', (linha, coluna))
             else:
                 nro_token += 1
                 strAux = ''
@@ -1218,7 +1217,7 @@ def getToken(file, token):
 
         elif estado == 'P':
             if nro_token == token:
-                return ('Operador Aritimético', '^', (linha, coluna))
+                return ('Operador Aritmético', '^', (linha, coluna))
             else:
                 nro_token += 1
                 strAux = ''
@@ -1228,7 +1227,7 @@ def getToken(file, token):
 
         elif estado == 'ATT':
             if nro_token == token:
-                return ('Operador Aritimético', '=', (linha, coluna))
+                return ('Operador Aritmético', '=', (linha, coluna))
             else:
                 nro_token += 1
                 strAux = ''
